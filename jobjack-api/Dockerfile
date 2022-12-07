@@ -1,8 +1,5 @@
 FROM node:12-alpine
 
-RUN npm install
-RUN npm run prebuild
-RUN npm run build
 COPY ./node_modules /usr/src/service/node_modules
 COPY ./dist /usr/src/service/dist
 COPY ./resources /usr/src/service/resources

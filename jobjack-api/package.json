@@ -21,7 +21,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@digikare/nestjs-prom": "^1.0.0",
     "@golevelup/ts-jest": "^0.3.4",
     "@nestjs/common": "^9.2.0",
     "@nestjs/core": "^9.2.0",

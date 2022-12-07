@@ -3,8 +3,6 @@ FROM nginx:alpine
 
 ## Replace the default nginx index page with our Angular app
 
-RUN npm install
-RUN npm run build
 RUN apk add --no-cache bash
 RUN rm -rf /usr/share/nginx/html/*
 COPY ./dist/jobjack-ui/* /usr/share/nginx/html/
