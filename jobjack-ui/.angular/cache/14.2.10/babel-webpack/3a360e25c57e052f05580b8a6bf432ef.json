@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { PaginatedSearchDto } from \"./paginated-search.dto\";\nexport class SearchResultDto extends PaginatedSearchDto {\n  constructor() {\n    super(...arguments);\n    this.results = [];\n  }\n\n}","map":null,"metadata":{},"sourceType":"module"}

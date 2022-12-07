@@ -1,0 +1,1 @@
+{"ast":null,"code":"export class DirEntry {\n  constructor(path, name, size, permissions, isDir) {\n    this.path = path;\n    this.name = name;\n    this.size = size;\n    this.permissions = permissions;\n    this.isDir = isDir;\n  }\n\n}","map":null,"metadata":{},"sourceType":"module"}

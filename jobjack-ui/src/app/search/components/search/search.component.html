@@ -1,0 +1,37 @@
+<div>
+	<form>
+	<mat-form-field>
+		<input matInput type="text" placeholder="Search" [formControl]="term" #input>
+		<mat-error *ngIf="term?.errors?.pattern">Path must start with /</mat-error>
+		<mat-error *ngIf="!!term?.errors?.required">Path is required</mat-error>
+	</mat-form-field>
+</form>
+</div>
+<hr />
+<br />
+<br />
+<div>
+	<mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
+		<ng-container matColumnDef="path">
+			<mat-header-cell *matHeaderCellDef>path</mat-header-cell>
+			<mat-cell mat-cell *matCellDef="let entry">{{entry.path}}</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="name">
+			<mat-header-cell *matHeaderCellDef>name</mat-header-cell>
+			<mat-cell *matCellDef="let entry" (click)="openDir(entry)">{{ entry.name }}</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="size">
+			<mat-header-cell *matHeaderCellDef>size</mat-header-cell>
+			<mat-cell *matCellDef="let entry">{{entry.size }}</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="permissions">
+			<mat-header-cell *matHeaderCellDef>permissions</mat-header-cell>
+			<mat-cell *matCellDef="let entry">{{ entry.permissions }}</mat-cell>
+		</ng-container>
+		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+		<mat-row [class.clickable]="row.isDir" *matRowDef="let row; columns: displayedColumns;" (click)="openDir(row)">
+		</mat-row>
+	</mat-table>
+	<mat-paginator [length]="dataSource.totalResults" [pageSize]="20" [pageSizeOptions]="[10, 20, 50, 100]">
+	</mat-paginator>
+</div>

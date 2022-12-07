@@ -1,0 +1,1 @@
+{"ast":null,"code":"export class page {\n  constructor() {\n    this.size = 20;\n    this.page = 1;\n  }\n\n}","map":null,"metadata":{},"sourceType":"module"}

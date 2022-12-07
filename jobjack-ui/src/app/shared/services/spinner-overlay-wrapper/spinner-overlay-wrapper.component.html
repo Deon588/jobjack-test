@@ -1,0 +1,13 @@
+<div class="wrapper">
+  <div class="overlay" *ngIf="showSpinner">
+    <div class="spinner-wrapper">
+      <h1>loading></h1>
+      <mat-spinner></mat-spinner>
+      <p *ngIf="message">{{message | translate}}</p>
+    </div>
+  </div>
+
+  <div class="loaded-content" [class.blurred]="showSpinner">
+    <ng-content></ng-content>
+  </div>
+</div>

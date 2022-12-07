@@ -1,0 +1,83 @@
+pipeline {
+    agent any
+    options {
+    // gitLabConnection('pgitap1zatcrh.vodacom.corp')
+    gitlabBuilds(builds: ['build'])
+}
+    post {
+        failure {
+            updateGitlabCommitStatus name: 'build', state: 'failed'
+        }
+        unstable {
+            updateGitlabCommitStatus name: 'build', state: 'failed'
+        }
+        aborted {
+            updateGitlabCommitStatus name: 'build', state: 'canceled'
+        }
+        success {
+            updateGitlabCommitStatus name: 'build', state: 'success'
+        }
+    }
+    triggers {
+        gitlab(triggerOnPush: true, triggerOnMergeRequest: true, branchFilterType: 'All', cancelPendingBuildsOnUpdate: true)
+    }
+        parameters {                
+            string(name: 'app_version', defaultValue: 'latest', description: 'application version to build')
+            string(name: 'app_name', defaultValue: 'CICD-demo', description: 'application name')
+            string(name: 'sourceBranch', defaultValue: 'master', description: 'branch name')
+        }
+    stages {
+                stage('checkout ${app_name} frontend') {
+            steps {
+                updateGitlabCommitStatus name: 'build', state: 'running'
+                echo "checking out CICD Demo frontend"
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: '${app_name}-ui']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@pgitap1zatcrh.vodacom.corp:XIB/cicd-demo-ui.git']]])
+            }
+        }
+        stage("checkout CICD Demo Backend") {
+            steps {            
+                echo "checking out ${app_name} backend"
+                checkout([$class: 'GitSCM', branches: [[name: "${sourceBranch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: '${app_name}-backend']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '2fc30716-9845-4c3d-b032-d12cd16b88db', url: 'git@pgitap1zatcrh.vodacom.corp:XIB/CICD-demo-backend.git']]])
+            }
+        }
+        stage('run unit tests') {
+            steps {
+                sh label: '', script: '''
+                cd ./${app_name}-backend
+                npm config set proxy http://10.132.93.177:3128
+                npm ci
+                npm run test:cov
+                npm run prebuild
+                npm run build
+                '''
+            }
+        }
+        stage('Generate coverage report') {
+            steps {
+                cobertura autoUpdateStability: true, coberturaReportFile: "${app_name}-backend/coverage/cobertura-coverage.xml", conditionalCoverageTargets: '60, 0, 0', failUnstable: true, lineCoverageTargets: '60, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '60, 0, 0', onlyStable: true, sourceEncoding: 'ASCII', zoomCoverageChart: false
+            }
+        }
+    stage('build') {
+        steps {
+            echo "building ${app_name} docker image version ${app_version}"
+            sh label: '', script: '''
+rm -rf ./${app_name}-backend/client
+            mkdir -p ./${app_name}-backend/client
+            cd ./${app_name}-ui
+                            npm install
+                                            npm run build --prod
+                                                            mv ./dist/cicd-demo-ui/** ../${app_name}-backend/client
+            cd ../${app_name}-backend
+                docker system prune -a -f
+                docker build --build-arg http_proxy=http://10.132.93.177:3128 --build-arg https_proxy=http://10.132.93.177:3128 -t ccsnexus.vodacom.corp/cicd-demo:${app_version} .
+                docker push ccsnexus.vodacom.corp/cicd-demo:${app_version}
+                docker rmi ccsnexus.vodacom.corp/cicd-demo:${app_version}'''
+            }
+        }
+        stage('Deploy to QA') {
+            steps {
+                build job: 'cicd-demo-deploy-qa', parameters: [string(name: 'app_version', value: 'latest'), string(name: 'app_name', value: 'cicd-demo')]
+            }
+        }
+    }
+    }

@@ -1,0 +1,1 @@
+{"ast":null,"code":"export function CustomPathValidator() {\n  return control => {\n    const value = control.value;\n\n    if (!value) {\n      return null;\n    }\n\n    const PATH_REGEXP = /^\\/[a-zA-Z0-9]*$/;\n    return PATH_REGEXP.test(value) ? null : {\n      pathInvalid: true\n    };\n  };\n}","map":null,"metadata":{},"sourceType":"module"}

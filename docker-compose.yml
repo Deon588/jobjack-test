@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  jobjack-ui:
+    build: ./jobjack-ui
+    env_file: ./jobjack-ui/.env
+    container_name: jobjack-ui
+    ports:
+      - "4200:4200"
+  jobjack-api:
+    build: ./jobjack-api
+    env_file: ./jobjack-api/docker.env
+    container_name: jobjack-api
+    ports:
+      - "3003:3003"
