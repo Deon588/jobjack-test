@@ -1,9 +1,9 @@
 # compiled output
-/jobjack-api/dist
-/jobjack-ui/dist
+./jobjack-api/dist
+./jobjack-ui/dist
 /client
-/jobjack-api/node_modules
-/jobjack-ui/node_modules
+./jobjack-api/node_modules
+./jobjack-ui/node_modules
 
 # Logs
 logs
