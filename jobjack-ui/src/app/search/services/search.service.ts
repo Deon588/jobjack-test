@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Observable, of } from 'rxjs';
 import { DirEntry } from 'src/app/dto/dir-entry.dto';
 import { PaginatedSearchResultDto } from '../../dto/paginated-search-result-dto';
@@ -10,11 +10,10 @@ import { PaginatedSearchResultDto } from '../../dto/paginated-search-result-dto'
 export class SearchService {
 
   constructor(private hc: HttpClient) {
-   }
+  }
 
-   searchDir(search: PaginatedSearchResultDto<DirEntry>): Observable<any> {
-    console.log("searching", search);
+  searchDir(search: PaginatedSearchResultDto<DirEntry>): Observable<any> {
     return this.hc.post(`/api/jobjack/search`, search);
-   }
-   
+  }
+
 }
